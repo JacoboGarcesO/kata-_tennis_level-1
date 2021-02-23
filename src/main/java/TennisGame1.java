@@ -1,8 +1,7 @@
-
 public class TennisGame1 implements TennisGame {
 
-    private int scorePlayer1 = 0;
-    private int scorePlayer2 = 0;
+    private int pointPlayer1 = 0;
+    private int pointPlayer2 = 0;
     private String player1Name;
     private String player2Name;
 
@@ -12,65 +11,73 @@ public class TennisGame1 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            scorePlayer1 += 1;
+        if (playerName.equals(this.player1Name))
+            pointPlayer1 += 1;
         else
-            scorePlayer2 += 1;
+            pointPlayer2 += 1;
     }
 
     public String getScore() {
         String score = "";
         int temporalScore=0;
-        if (scorePlayer1 == scorePlayer2)
-        {
-            switch (scorePlayer1)
-            {
-                case 0:
-                    score = "Love-All";
-                    break;
-                case 1:
-                    score = "Fifteen-All";
-                    break;
-                case 2:
-                    score = "Thirty-All";
-                    break;
-                default:
-                    score = "Deuce";
-                    break;
-
-            }
-        }
-        else if (scorePlayer1 >=4 || scorePlayer2 >=4)
-        {
-            int diferenceScore = scorePlayer1 - scorePlayer2;
-            if (diferenceScore==1) score ="Advantage player1";
-            else if (diferenceScore ==-1) score ="Advantage player2";
-            else if (diferenceScore>=2) score = "Win for player1";
-            else score ="Win for player2";
-        }
-        else
-        {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) temporalScore = scorePlayer1;
-                else { score+="-"; temporalScore = scorePlayer2;}
-                switch(temporalScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
+        if (equalScore()) score = caseEqualScore();
+        else if (highestScoreToFour()) score = playerAdvantage();
+        else {
+            for (int i=1; i<3; i++) {
+                if (i==1) temporalScore = pointPlayer1;
+                else { score+="-"; temporalScore = pointPlayer2;}
+                score+=temporalScore(temporalScore);
             }
         }
         return score;
     }
+
+    private boolean equalScore (){
+        return pointPlayer1 == pointPlayer2;
+    }
+
+    private String caseEqualScore(){
+        switch (pointPlayer1)
+        {
+            case 0: return "Love-All";
+            case 1: return "Fifteen-All";
+            case 2: return "Thirty-All";
+            default: return "Deuce";
+        }
+    }
+
+    private boolean highestScoreToFour(){
+        return pointPlayer1 >=4 || pointPlayer2 >=4;
+    }
+
+    private String playerAdvantage (){
+        int diference = pointPlayer1 - pointPlayer2;
+        if (player1Advantage()) return "Advantage player1";
+        else if(player2Advantage()) return "Advantage player2";
+        else if (player1Win()) return "Win for player1";
+        else return "Win for player2";
+    }
+
+    private boolean player1Advantage(){
+        return (pointPlayer1 - pointPlayer2) == 1;
+    }
+
+    private boolean player2Advantage(){
+        return (pointPlayer1 - pointPlayer2) == -1;
+    }
+
+    private boolean player1Win(){
+        return (pointPlayer1 - pointPlayer2) >= 2;
+    }
+
+    private String temporalScore(int temporalScore){
+        switch(temporalScore)
+        {
+            case 0: return "Love";
+            case 1: return "Fifteen";
+            case 2: return "Thirty";
+            default: return "Forty";
+        }
+    }
+
 }
